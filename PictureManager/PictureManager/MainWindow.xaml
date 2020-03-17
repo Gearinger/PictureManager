@@ -11,7 +11,8 @@
         xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
         xmlns:dxmvvmi="http://schemas.devexpress.com/winfx/2008/xaml/mvvm/internal"
         mc:Ignorable="d"
-        Title="PictureManager" Height="auto" Width="auto">
+        Title="PictureManager" Height="auto" Width="auto"
+        Name="MainWin">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="30"></RowDefinition>
@@ -20,7 +21,7 @@
         </Grid.RowDefinitions>
         <dxb:MainMenuControl Grid.Row="0" Caption="Main Menu">
             <dxb:BarSubItem Name="bsFile" CategoryName="BuiltInMenus" Content="文件">
-                <dxb:BarButtonItem Name="bNew" CategoryName="File" Content="新建" KeyGesture="Ctrl+N" Description="新建项目"/>
+                <dxb:BarButtonItem Name="bNew" CategoryName="File" Content="新建" KeyGesture="Ctrl+N" Description="新建项目" Command="{Binding CreateDirectoryCommand}"/>
                 <dxb:BarButtonItem Name="bOpen" CategoryName="File" Content="打开" Description="打开项目" />
                 <dxb:BarButtonItem Name="bSave" CategoryName="File" Content="保存" Description="保存项目" />
                 <dxb:BarItemLinkSeparator />
@@ -99,7 +100,7 @@
         </dxb:MainMenuControl>
         <dxdo:DockLayoutManager Grid.Row="1">
             <dxdo:LayoutGroup Caption="LayoutRoot" RenderTransformOrigin="0.355,0.516">
-                <dxdo:LayoutPanel Caption="资源" ItemWidth="120" ShowCaption="False">
+                <dxdo:LayoutPanel Caption="资源" ItemWidth="200" ShowCaption="False">
                     <dxg:TreeListControl Name ="Directory"  ItemsSource="{Binding DirectoriesTree}">
                         <dxg:TreeListControl.View>
                             <dxg:TreeListView></dxg:TreeListView>
@@ -117,17 +118,20 @@
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <WrapPanel>
-                                        <Image Source="{Binding ImageFile}"></Image>
+                                        <Image Source="{Binding PicturePath}"></Image>
                                     </WrapPanel>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
                     </dxlc:FlowLayoutControl>
                 </dxdo:LayoutPanel>
-                <dxdo:LayoutPanel Caption="属性" ItemWidth="160" ShowCaption="False"/>
+                <dxdo:LayoutPanel Caption="属性" ItemWidth="230" ShowCaption="False"/>
             </dxdo:LayoutGroup>
         </dxdo:DockLayoutManager>
-        <dxb:StatusBarControl Grid.Row="2"/>
+        <StatusBar Grid.Row="2" Background="White" Margin="5">
+            <StatusBarItem Content="{Binding current}" Width="210"></StatusBarItem>
+            <StatusBarItem Content="日期:  " HorizontalAlignment="Right" Width="150"></StatusBarItem>
+        </StatusBar>
 
     </Grid>
 </Window>
