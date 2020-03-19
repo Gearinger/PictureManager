@@ -102,8 +102,24 @@
             <dxdo:LayoutGroup Caption="LayoutRoot" RenderTransformOrigin="0.355,0.516">
                 <dxdo:LayoutPanel Caption="资源" ItemWidth="200" ShowCaption="False">
                     <dxg:TreeListControl Name ="Directory"  ItemsSource="{Binding DirectoriesTree}">
+                        <dxg:TreeListControl.Columns>
+                            <dxg:TreeListColumn Header="文件夹"
+                                    FieldName="Name" 
+                                    ReadOnly="True" Width="*"
+                                    AutoFilterCriteria="Contains"/>
+                        </dxg:TreeListControl.Columns>
                         <dxg:TreeListControl.View>
-                            <dxg:TreeListView></dxg:TreeListView>
+                            <dxg:TreeListView Name="treeListView1"  
+                                  KeyFieldName="ID" ParentFieldName="ParentID"
+                                  ShowSearchPanelMode="Never"
+                                  ShowColumnHeaders="False"
+                                  AutoExpandAllNodes="False"
+                                  ShowAutoFilterRow="True"
+                                  VerticalScrollbarVisibility="Auto"
+                                  ExpandNodesOnFiltering="True" 
+                                  FilterMode="Extended"
+                                  ShowFilterPanelMode="Never">
+                            </dxg:TreeListView>
                         </dxg:TreeListControl.View>
                     </dxg:TreeListControl>
                 </dxdo:LayoutPanel>

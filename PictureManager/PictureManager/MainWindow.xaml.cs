@@ -24,7 +24,7 @@ namespace PictureManager
         public MainWindow()
         {
             InitializeComponent();
-            PictureList.DataContext = new PictureManageViewModel();
+            DataContext = new PictureManageViewModel();
         }
     }
 }
