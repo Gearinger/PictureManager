@@ -123,22 +123,20 @@
                     </dxg:TreeListControl>
                 </dxdo:LayoutPanel>
                 <dxdo:LayoutPanel Caption="预览" ShowCloseButton="False" ShowCaption="False">
-                    <dxlc:FlowLayoutControl FlowDirection="LeftToRight">
-                        <ItemsControl x:Name="PictureList" ItemsSource="{Binding }">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <WrapPanel HorizontalAlignment="Left"></WrapPanel>
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <WrapPanel>
-                                        <Image Source="{Binding PicturePath}"></Image>
-                                    </WrapPanel>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </dxlc:FlowLayoutControl>
+                    <ItemsControl>
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <WrapPanel>
+                                    <Image></Image>
+                                </WrapPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
                 </dxdo:LayoutPanel>
                 <dxdo:LayoutPanel Caption="属性" ItemWidth="230" ShowCaption="False"/>
             </dxdo:LayoutGroup>
