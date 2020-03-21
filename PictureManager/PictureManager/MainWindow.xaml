@@ -112,14 +112,13 @@
                             <dxg:TreeListView Name="treeListView1"  
                                   KeyFieldName="ID" ParentFieldName="ParentID"
                                   ShowSearchPanelMode="Never"
-                                  ShowColumnHeaders="False"
                                   AutoExpandAllNodes="False"
-                                  ShowAutoFilterRow="True"
+                                  ShowAutoFilterRow="False"
                                   VerticalScrollbarVisibility="Auto"
                                   ExpandNodesOnFiltering="True" 
                                   FilterMode="Extended"
-                                  ShowFilterPanelMode="Never">
-                            </dxg:TreeListView>
+                                  ShowFilterPanelMode="Never"
+                                  ShowVerticalLines="False" ShowIndicator="False" ShowHorizontalLines="False"/>
                         </dxg:TreeListControl.View>
                     </dxg:TreeListControl>
                 </dxdo:LayoutPanel>
