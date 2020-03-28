@@ -1,33 +1,32 @@
-﻿<Window xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"  xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"  xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars" 
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:PictureManager"
-        xmlns:dxwui="http://schemas.devexpress.com/winfx/2008/xaml/windowsui" 
-        xmlns:dxdo="http://schemas.devexpress.com/winfx/2008/xaml/docking" 
-        x:Class="PictureManager.MainWindow"
-        xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
-        xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
-        xmlns:dxmvvmi="http://schemas.devexpress.com/winfx/2008/xaml/mvvm/internal"
-        mc:Ignorable="d"
-        Title="PictureManager" Height="auto" Width="auto"
-        Name="MainWin">
+﻿<Window x:Class="PictureManager.MainWindow" mc:Ignorable="d" Title="PictureManager" Height="auto" Width="auto" Name="MainWin" 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core" 
+    xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol" 
+    xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid" 
+    xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:local="clr-namespace:PictureManager" 
+    xmlns:dxwui="http://schemas.devexpress.com/winfx/2008/xaml/windowsui" 
+    xmlns:dxdo="http://schemas.devexpress.com/winfx/2008/xaml/docking" 
+    xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm" 
+    xmlns:dxmvvmi="http://schemas.devexpress.com/winfx/2008/xaml/mvvm/internal" WindowStyle="None">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="30"></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="30" />
+            <RowDefinition />
+            <RowDefinition Height="30" />
         </Grid.RowDefinitions>
-        <dxb:MainMenuControl Grid.Row="0" Caption="Main Menu">
-            <dxb:BarSubItem Name="bsFile" CategoryName="BuiltInMenus" Content="文件">
-                <dxb:BarButtonItem Name="bNew" CategoryName="File" Content="新建" KeyGesture="Ctrl+N" Description="新建项目" Command="{Binding CreateDirectoryCommand}"/>
+        <dxb:MainMenuControl Grid.Row="0" Caption="Main Menu" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="13" VerticalContentAlignment="Center" Height="45" Margin="5,0,0,2" BorderThickness="0" >
+            <dxb:BarSubItem CategoryName="BuiltInMenus" Content="文件">
+                <dxb:BarButtonItem Name="bNew" CategoryName="File" Content="新建" KeyGesture="Ctrl+N" Description="新建项目" Command="{Binding CreateDirectoryCommand}" />
                 <dxb:BarButtonItem Name="bOpen" CategoryName="File" Content="打开" Description="打开项目" />
                 <dxb:BarButtonItem Name="bSave" CategoryName="File" Content="保存" Description="保存项目" />
                 <dxb:BarItemLinkSeparator />
                 <dxb:BarButtonItem Name="bSetting" CategoryName="File" Content="设置" Description="设置" />
                 <dxb:BarItemLinkSeparator />
-                <dxb:BarButtonItem Name="bExit" CategoryName="File" Content="_Exit" KeyGesture="Ctrl+X" Description="" />
+                <dxb:BarButtonItem Name="bExit" CategoryName="File" Content="退出" KeyGesture="Ctrl+X" Description="关闭" Command="{Binding CloseWinCommand}" />
             </dxb:BarSubItem>
             <dxb:BarSubItem Name="bsSetting" CategoryName="BuiltInMenus" Content="选项">
                 <dxb:BarButtonItemLink BarItemName="bUndo" />
@@ -37,113 +36,75 @@
                 <dxb:BarButtonItemLink BarItemName="bCopy" />
                 <dxb:BarButtonItemLink BarItemName="bPaste" />
                 <dxb:BarItemLinkSeparator />
-                <dxb:BarButtonItem Name="bClear"
-                                       CategoryName="Edit"
-                                       Content="C_lear"
-                                       Glyph="{dx:DXImage SvgImages/Icon Builder/Actions_Clear.svg}"
-                                       LargeGlyph="{dx:DXImage SvgImages/Icon Builder/Actions_Clear.svg}"
-                                       Command="{Binding ElementName=richControl, Path=ClearCommand}"
-                                       Description="Deletes all text without putting it on the Clipboard." />
-                <dxb:BarButtonItem Name="bSelectAll"
-                                       CategoryName="Edit"
-                                       Content="Select _All"
-                                       Glyph="{dx:DXImage SvgImages/PDF Viewer/SelectAll.svg}"
-                                       LargeGlyph="{dx:DXImage SvgImages/PDF Viewer/SelectAll.svg}"
-                                       KeyGesture="Ctrl+A"
-                                       Command="{Binding ElementName=richControl, Path=SelectAllCommand}"
-                                       Description="Selects all text in the active document." />
+                <dxb:BarButtonItem Name="bClear" CategoryName="Edit" Content="C_lear" Glyph="{dx:DXImage SvgImages/Icon Builder/Actions_Clear.svg}" LargeGlyph="{dx:DXImage SvgImages/Icon Builder/Actions_Clear.svg}" Command="{Binding ElementName=richControl, Path=ClearCommand}" Description="Deletes all text without putting it on the Clipboard." />
+                <dxb:BarButtonItem Name="bSelectAll" CategoryName="Edit" Content="Select _All" Glyph="{dx:DXImage SvgImages/PDF Viewer/SelectAll.svg}" LargeGlyph="{dx:DXImage SvgImages/PDF Viewer/SelectAll.svg}" KeyGesture="Ctrl+A" Command="{Binding ElementName=richControl, Path=SelectAllCommand}" Description="Selects all text in the active document." />
                 <dxb:BarItemLinkSeparator />
-                <dxb:BarButtonItem Name="bFind"
-                                       CategoryName="Edit"
-                                       Content="_Find"
-                                       Glyph="{dx:DXImage SvgImages/Outlook Inspired/Find.svg}"
-                                       LargeGlyph="{dx:DXImage SvgImages/Outlook Inspired/Find.svg}"
-                                       KeyGesture="Ctrl+F"
-                                       Description="Searches for the specified text."
-                                       IsEnabled="False" />
-                <dxb:BarButtonItem Name="bReplace"
-                                       CategoryName="Edit"
-                                       Content="_Replace"
-                                       Glyph="{dx:DXImage SvgImages/Outlook Inspired/Replace.svg}"
-                                       LargeGlyph="{dx:DXImage SvgImages/Outlook Inspired/Replace.svg}"
-                                       KeyGesture="Ctrl+H"
-                                       Description="Searches for and replaces the specified text."
-                                       IsEnabled="False" />
+                <dxb:BarButtonItem Name="bFind" CategoryName="Edit" Content="_Find" Glyph="{dx:DXImage SvgImages/Outlook Inspired/Find.svg}" LargeGlyph="{dx:DXImage SvgImages/Outlook Inspired/Find.svg}" KeyGesture="Ctrl+F" Description="Searches for the specified text." IsEnabled="False" />
+                <dxb:BarButtonItem Name="bReplace" CategoryName="Edit" Content="_Replace" Glyph="{dx:DXImage SvgImages/Outlook Inspired/Replace.svg}" LargeGlyph="{dx:DXImage SvgImages/Outlook Inspired/Replace.svg}" KeyGesture="Ctrl+H" Description="Searches for and replaces the specified text." IsEnabled="False" />
             </dxb:BarSubItem>
-            <!--<dxb:BarSubItem Name="bsFormat" CategoryName="BuiltInMenus" Content="F_ormat">
-                <dxb:BarEditItemLink BarItemName="eFontFamily" />
-                <dxb:BarSplitButtonItemLink BarItemName="bFontColor" />
-                <dxb:BarItemLinkSeparator />
-                <dxb:BarCheckItemLink BarItemName="bBullets" />
-            </dxb:BarSubItem>
-            <dxb:BarSubItem Name="bsToolBars" CategoryName="BuiltInMenus" Content="_Toolbars">
-                <dxb:ToolbarListItem Name="toolbarListItemCore" CategoryName="Toolbars" Content="_Toolbars" />
-            </dxb:BarSubItem>
-            <dxb:BarSubItem x:Name="themeSelectorSubItem" dxmvvmi:InteractionHelper.BehaviorInDesignMode="AsWellAsNotInDesignMode">
-                <dxmvvm:Interaction.Behaviors>
-                    <dxb:BarSubItemThemeSelectorBehavior ShowMode="GroupedList" />
-                </dxmvvm:Interaction.Behaviors>
-            </dxb:BarSubItem>-->
             <dxb:BarSubItem Name="bsHelp" CategoryName="BuiltInMenus" Content="帮助">
-                <dxb:BarButtonItem Name="bHome"
-                                       CategoryName="Help"
-                                       Content="_DevExpress on the Web"
-                                       Command="{Binding ElementName=root, Path=GoDevExpressCommand}"
-                                       Description="Opens the web page." />
+                <dxb:BarButtonItem Name="bHome" CategoryName="Help" Content="_DevExpress on the Web" Command="{Binding ElementName=root, Path=GoDevExpressCommand}" Description="Opens the web page." />
                 <dxb:BarItemLinkSeparator />
-                <dxb:BarButtonItem Name="bAbout"
-                                       CategoryName="Help"
-                                       Content="_About"
-                                       Description="Displays the description of this program."
-                                       Command="{Binding ElementName=root, Path=ShowAboutCommand}" />
+                <dxb:BarButtonItem Name="bAbout" CategoryName="Help" Content="_About" Description="Displays the description of this program." Command="{Binding ElementName=root, Path=ShowAboutCommand}" />
             </dxb:BarSubItem>
         </dxb:MainMenuControl>
         <dxdo:DockLayoutManager Grid.Row="1">
             <dxdo:LayoutGroup Caption="LayoutRoot" RenderTransformOrigin="0.355,0.516">
                 <dxdo:LayoutPanel Caption="资源" ItemWidth="200" ShowCaption="False">
-                    <dxg:TreeListControl Name ="Directory"  ItemsSource="{Binding DirectoriesTree}">
+                    <dxg:TreeListControl Name="Directory" ItemsSource="{Binding DirectoriesTree}" SelectedItem="{Binding SelectDirectory}">
                         <dxg:TreeListControl.Columns>
-                            <dxg:TreeListColumn Header="文件夹"
-                                    FieldName="Name" 
-                                    ReadOnly="True" Width="*"
-                                    AutoFilterCriteria="Contains"/>
+                            <dxg:TreeListColumn Header="文件夹" FieldName="Name" ReadOnly="True" Width="*" AutoFilterCriteria="Contains" />
                         </dxg:TreeListControl.Columns>
                         <dxg:TreeListControl.View>
-                            <dxg:TreeListView Name="treeListView1"  
-                                  KeyFieldName="ID" ParentFieldName="ParentID"
-                                  ShowSearchPanelMode="Never"
-                                  AutoExpandAllNodes="False"
-                                  ShowAutoFilterRow="False"
-                                  VerticalScrollbarVisibility="Auto"
-                                  ExpandNodesOnFiltering="True" 
-                                  FilterMode="Extended"
-                                  ShowFilterPanelMode="Never"
-                                  ShowVerticalLines="False" ShowIndicator="False" ShowHorizontalLines="False"/>
+                            <dxg:TreeListView Name="treeListView1" 
+                                              KeyFieldName="ID" ParentFieldName="ParentID" 
+                                              ShowSearchPanelMode="Never" AutoExpandAllNodes="False" ShowAutoFilterRow="False" 
+                                              VerticalScrollbarVisibility="Auto" ExpandNodesOnFiltering="True" FilterMode="Extended" 
+                                              ShowFilterPanelMode="Never" ShowVerticalLines="False" 
+                                              ShowIndicator="False" ShowHorizontalLines="False" />
                         </dxg:TreeListControl.View>
                     </dxg:TreeListControl>
                 </dxdo:LayoutPanel>
-                <dxdo:LayoutPanel Caption="预览" ShowCloseButton="False" ShowCaption="False">
-                    <ItemsControl>
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapPanel/>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <WrapPanel>
-                                    <Image></Image>
-                                </WrapPanel>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
+                <dxdo:LayoutPanel Caption="预览" ShowCloseButton="False" ShowCaption="False" >
+                    <ScrollViewer>
+                        <ItemsControl ItemsSource="{Binding PictureList}" Focusable="True">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border BorderThickness="1" Background="Azure">
+                                        <Image Source="{Binding PicturePath}" 
+                                           Width ="{Binding PixelWidth}" 
+                                           Height="{Binding PixelHeight}" 
+                                           Focusable="True"/>
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Style.Triggers>
+                                                    <Trigger Property="Focusable" Value="True">
+                                                        <Setter Property="Background" Value="LightSkyBlue"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
                 </dxdo:LayoutPanel>
-                <dxdo:LayoutPanel Caption="属性" ItemWidth="230" ShowCaption="False"/>
+                <dxdo:LayoutPanel Caption="属性" ItemWidth="230" ShowCaption="False" />
             </dxdo:LayoutGroup>
         </dxdo:DockLayoutManager>
-        <StatusBar Grid.Row="2" Background="White" Margin="5">
-            <StatusBarItem Content="{Binding current}" Width="210"></StatusBarItem>
-            <StatusBarItem Content="日期:  " HorizontalAlignment="Right" Width="150"></StatusBarItem>
+        <StatusBar Grid.Row="2" Background="White" VerticalAlignment="Center">
+            <WrapPanel Width="400" Margin="10,0,10,0">
+                <StatusBarItem Content="当前路径：" />
+                <StatusBarItem Content="{Binding CurrentDirectory}" />
+            </WrapPanel>
+            <StatusBarItem Content="日期：" Margin="10,0,0,0"/>
+            <StatusBarItem Content="" />
         </StatusBar>
 
     </Grid>

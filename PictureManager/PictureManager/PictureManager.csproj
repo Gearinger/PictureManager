@@ -72,7 +72,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Models\DirectoriesModel.cs" />
+    <Compile Include="Models\DirectoryModel.cs" />
     <Compile Include="Utility\Utility.cs" />
     <Compile Include="ViewModel\PictureManageViewModel.cs" />
     <Page Include="MainWindow.xaml">

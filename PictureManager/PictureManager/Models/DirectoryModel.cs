@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace PictureManager.Models
 {
-    class DirectoriesModel:BindableBase
+    class DirectoryModel:BindableBase
     {
         private int id;
         private int parentId;
