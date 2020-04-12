@@ -1,18 +1,22 @@
-﻿using DevExpress.Mvvm;
-using PictureManager.Models;
+﻿using PictureManager.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using PictureManager.DelegateCommandNameSpace;
+using System.Security.AccessControl;
+using PictureManager.Utility;
 
 namespace PictureManager.ViewModel
 {
-    class PictureManageViewModel: ViewModelBase
+    class PictureManageViewModel: INotifyPropertyChanged
     {
         public PictureManageViewModel()
         {
@@ -27,7 +31,17 @@ namespace PictureManager.ViewModel
         private DirectoryModel selectDirectory = new DirectoryModel();
         private PictureItemModel selectPicture = new PictureItemModel();
         private string currentDirectory;
+        private string mainBackGroundIMG;
+        private int pWidth = 1190;
 
+        /// <summary>
+        /// 项目中文件夹数量
+        /// </summary>
+        public int DirCount { get; set; }
+        /// <summary>
+        /// 项目中图片数量
+        /// </summary>
+        public int PicCount { get; set; }
 
         #endregion
 
@@ -35,17 +49,17 @@ namespace PictureManager.ViewModel
         /// <summary>
         /// 左侧文件夹树列表
         /// </summary>
-        public ObservableCollection<DirectoryModel> DirectoriesTree { get => directoryList; set { directoryList = value;RaisePropertiesChanged("DirectoriesTree"); } }
+        public ObservableCollection<DirectoryModel> DirectoriesTree { get => directoryList; set { directoryList = value; NotifyPropertyChanged("DirectoriesTree"); } }
 
         /// <summary>
         /// 图片列表
         /// </summary>
-        public ObservableCollection<PictureItemModel> PictureList { get => pictureList; set { pictureList = value; RaisePropertiesChanged("PictureList"); } }
+        public ObservableCollection<PictureItemModel> PictureList { get => pictureList; set { pictureList = value; NotifyPropertyChanged("PictureList"); } }
 
         /// <summary>
         /// 选择的图片
         /// </summary>
-        public PictureItemModel SelectPicture { get => selectPicture; set { selectPicture = value; RaisePropertiesChanged("SelectPicture"); } }
+        public PictureItemModel SelectPicture { get => selectPicture; set { selectPicture = value; NotifyPropertyChanged("SelectPicture"); } }
 
         /// <summary>
         /// 选择的路径
@@ -58,7 +72,7 @@ namespace PictureManager.ViewModel
                 {
                     CurrentDirectory = selectDirectory?.Directory;
                 }
-                RaisePropertiesChanged("SelectDirectory"); 
+                NotifyPropertyChanged("SelectDirectory"); 
             } }
 
         public string CurrentDirectory { 
@@ -67,12 +81,23 @@ namespace PictureManager.ViewModel
                 if (currentDirectory != value)
                 {
                     InitPictureList(value);
+                    SortPicture();
                 }
-                currentDirectory = value; 
-                RaisePropertiesChanged("CurrentDirectory"); 
+                currentDirectory = value;
+                NotifyPropertyChanged("CurrentDirectory"); 
             } 
         }
 
+        public string MainBackGroundIMG { get => mainBackGroundIMG;set { mainBackGroundIMG = value; NotifyPropertyChanged("MainBackGroundIMG"); } }
+
+        public int PWidth { get=>pWidth; set {pWidth=value; NotifyPropertyChanged("PWidth"); } }
+
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void NotifyPropertyChanged([CallerMemberName] String info = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(info));
+        }
         #endregion
 
         #region Command
@@ -89,9 +114,9 @@ namespace PictureManager.ViewModel
             folderBrowserDialog.ShowNewFolderButton = true;
             folderBrowserDialog.ShowDialog();
             defaultDirectory = folderBrowserDialog.SelectedPath;
-            bool isOver = false;
-            InitDirectoryList(defaultDirectory, ref isOver);
+            GetDirectoryListFromDir(DirectoriesTree,defaultDirectory);
             InitPictureList(defaultDirectory);
+            SortPicture();
             currentDirectory = defaultDirectory;
         }
         #endregion
@@ -110,9 +135,9 @@ namespace PictureManager.ViewModel
             folderBrowserDialog.ShowNewFolderButton = true;
             folderBrowserDialog.ShowDialog();
             defaultDirectory = folderBrowserDialog.SelectedPath;
-            bool isOver = false;
-            InitDirectoryList(defaultDirectory, ref isOver);
+            GetDirectoryListFromDir(DirectoriesTree,defaultDirectory);
             InitPictureList(defaultDirectory);
+            SortPicture();
             currentDirectory = defaultDirectory;
         }
         #endregion
@@ -145,34 +170,35 @@ namespace PictureManager.ViewModel
             //初始化显示大小
             foreach (var item in PictureList)
             {
-                item.PixelHeight = 300;
-                item.PixelWidth = item.PixelHeight * GetWidthDevideHeight(item.PicturePath);
+                var rate = 1.0/GetWidthDevideHeight(item.PicturePath);
+                item.Height = Convert.ToInt32(item.Width * rate);
             }
         }
 
         /// <summary>
-        /// 初始化文件夹列表
+        /// 读取路径，构建DirectoryModelList
         /// </summary>
         /// <param name="directory">目标路径</param>
         /// <param name="isOver">是否结束寻找下级文件夹</param>
-        private void InitDirectoryList(string directory, ref bool isOver)
+        private void GetDirectoryListFromDir(ObservableCollection<DirectoryModel> DirList, string directory)
         {
-            if (DirectoriesTree.Count==0)
+            //路径不可访问
+            if (Common.IsPathHidden(directory)) return;
+
+            if (DirList.Count==0)
             {
-                DirectoriesTree.Add(new DirectoryModel() { Directory = directory, ID = DirectoriesTree.Count + 1, ParentID = 0, Name = Path.GetFileName(directory) });
+                DirList.Add(new DirectoryModel() { Directory = directory, GUID = Guid.NewGuid(), Name = Path.GetFileName(directory) });
             }
-            if (isOver) return;
-            int parentID = DirectoriesTree.ToList().Find(p => p.Directory == directory)==null?1: DirectoriesTree.ToList().Find(p => p.Directory == directory).ID;
+
             foreach (var item in Directory.GetDirectories(directory))
             {
-                if (Utility.Utility.IsPathHidden(item)) continue;
-                DirectoriesTree.Add(new DirectoryModel() { Directory = item, ID = DirectoriesTree.Count + 1, ParentID = parentID, Name = Path.GetFileName(item) });
-                if (DirectoriesTree.Count == 1000)
+                if (Common.IsPathHidden(item)) continue;
+                DirList.Add(new DirectoryModel() { Directory = item, GUID = Guid.NewGuid(), Name = Path.GetFileName(item) });
+                if (DirCount >= 1000)
                 {
-                    isOver = MessageBox.Show("所选择项目文件已超过1000条，是否继续?", "", MessageBoxButtons.YesNo).Equals(DialogResult.No);
+                    if (MessageBox.Show("所选择项目文件夹已超过1000条，是否继续?", "", MessageBoxButtons.YesNo).Equals(DialogResult.No)) return;
                 }
-                if (isOver) break;
-                InitDirectoryList(item, ref isOver);
+                GetDirectoryListFromDir(DirList[DirList.Count-1].DirectoryList, item);
             }
         }
         
@@ -180,6 +206,39 @@ namespace PictureManager.ViewModel
         {
             Bitmap pic = new Bitmap(picPath);
             return pic.Width / (double)pic.Height;
+        }
+
+        private void SortPicture()
+        {
+            if (PictureList.Count==0)
+            {
+                return;
+            }
+            int loopNum = PWidth / (PictureList[0].Width+10);
+            List<Point> seriesList = new List<Point>();
+
+            PictureList[0].X = 0;
+            PictureList[0].Y = 0;
+            seriesList.Add(new Point(PictureList[0].X, PictureList[0].Y + PictureList[0].Height + 5));
+
+            for (int i = 1; i < PictureList.Count; i++)
+            {
+                if (i < loopNum)
+                {
+                    PictureList[i].X = PictureList[i - 1].X + PictureList[i - 1].Width + 5;
+                    PictureList[i].Y = 0;
+                    PictureList[i].Margin = $"{PictureList[i].X},{PictureList[i].Y},0,0";
+                    seriesList.Add(new Point(PictureList[i].X, PictureList[i].Y + PictureList[i].Height));
+                }
+                else
+                {
+                    PictureList[i].X = (int)seriesList[0].X;
+                    PictureList[i].Y = (int)seriesList[0].Y;
+                    PictureList[i].Margin = $"{PictureList[i].X},{PictureList[i].Y},0,0";
+                    seriesList[0] = new Point(PictureList[i].X, PictureList[i].Y + PictureList[i].Height+5);
+                }
+                seriesList.Sort((x, y) => Convert.ToInt32(x.Y - y.Y));
+            }
         }
 
         #endregion

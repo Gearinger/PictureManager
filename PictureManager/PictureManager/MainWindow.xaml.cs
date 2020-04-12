@@ -35,5 +35,10 @@ namespace PictureManager
             // Begin dragging the window
             this.DragMove();
         }
+
+        private void Image_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+
+        }
     }
 }

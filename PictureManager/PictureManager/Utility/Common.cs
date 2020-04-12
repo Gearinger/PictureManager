@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace PictureManager.Utility
 {
-    class Utility
+    class Common
     {
         public static bool IsPathHidden(string path)
         {
